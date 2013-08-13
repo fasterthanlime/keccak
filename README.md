@@ -4,7 +4,13 @@
 ### Usage
 
 ```go
-import "github.com/steakknife/keccak-cgo"
+import "github.com/steakknife/keccak"
+
+...
+
+h := keccak.New256()
+h.Write([]byte("Awesome"))
+keccakhash := h.Sum(nil)
 ```
 
 ### keccak cgo 
