@@ -1,3 +1,6 @@
+# TL;DR
+## 10x faster than https://github.com/ebfe/keccak
+
 ### keccak cgo 
 
     PASS
