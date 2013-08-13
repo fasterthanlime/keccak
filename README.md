@@ -1,6 +1,12 @@
 # TL;DR
 ## 10x faster than https://github.com/ebfe/keccak
 
+### Usage
+
+```go
+import "github.com/steakknife/keccak-cgo"
+```
+
 ### keccak cgo 
 
     PASS
