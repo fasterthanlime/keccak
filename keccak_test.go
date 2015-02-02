@@ -1,10 +1,11 @@
 package keccak
+
 // borrowed from https://github.com/ebfe/keccak
 
 import (
 	"bytes"
 	"hash"
-    "math/rand"
+	"math/rand"
 	"testing"
 )
 
@@ -221,101 +222,113 @@ func TestKeccakLong512(t *testing.T) {
 	}
 }
 
-const BUF_SIZE = 1048576
+const BUF_SIZE = 1024 * 1024 // 1048576 bytes = 1 MiB
 
 var buf = func() []byte {
-    result := make([]byte, BUF_SIZE)
-    rand.Seed(0xDEADBEEF)
-    for i := range result {
-        result[i] = byte(rand.Int())
-    }
-    return result
+	result := make([]byte, BUF_SIZE)
+	rand.Seed(0xDEADBEEF)
+	for i := range result {
+		result[i] = byte(rand.Int())
+	}
+	return result
 }()
 
+func setBytes(b *testing.B) {
+	b.SetBytes(int64(len(buf)))
+}
+
 func BenchmarkKeccak224Write1MiB(b *testing.B) {
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h := New224()
-        b.StartTimer()
-        h.Write(buf)
-    }
+	setBytes(b)
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h := New224()
+		b.StartTimer()
+		h.Write(buf)
+	}
 }
 
 func BenchmarkKeccak224Sum(b *testing.B) {
-    b.StopTimer()
-    h := New224()
-    h.Write(buf)
-    b.StartTimer()
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h0 := h
-        b.StartTimer()
-        h0.Sum(nil)
-    }
+	b.StopTimer()
+	h := New224()
+	h.Write(buf)
+	setBytes(b)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h0 := h
+		b.StartTimer()
+		h0.Sum(nil)
+	}
 }
 
 func BenchmarkKeccak256Write1MiB(b *testing.B) {
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h := New224()
-        b.StartTimer()
-        h.Write(buf)
-    }
+	setBytes(b)
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h := New224()
+		b.StartTimer()
+		h.Write(buf)
+	}
 }
 
 func BenchmarkKeccak256Sum(b *testing.B) {
-    b.StopTimer()
-    h := New256()
-    h.Write(buf)
-    b.StartTimer()
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h1 := h
-        b.StartTimer()
-        h1.Sum(nil)
-    }
+	b.StopTimer()
+	h := New256()
+	h.Write(buf)
+	setBytes(b)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h1 := h
+		b.StartTimer()
+		h1.Sum(nil)
+	}
 }
 
 func BenchmarkKeccak384Write1MiB(b *testing.B) {
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h := New384()
-        b.StartTimer()
-        h.Write(buf)
-    }
+	setBytes(b)
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h := New384()
+		b.StartTimer()
+		h.Write(buf)
+	}
 }
 
 func BenchmarkKeccak384Sum(b *testing.B) {
-    b.StopTimer()
-    h := New384()
-    h.Write(buf)
-    b.StartTimer()
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h0 := h
-        b.StartTimer()
-        h0.Sum(nil)
-    }
+	b.StopTimer()
+	h := New384()
+	h.Write(buf)
+	setBytes(b)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h0 := h
+		b.StartTimer()
+		h0.Sum(nil)
+	}
 }
 
 func BenchmarkKeccak512Write1MiB(b *testing.B) {
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h := New512()
-        b.StartTimer()
-        h.Write(buf)
-    }
+	setBytes(b)
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h := New512()
+		b.StartTimer()
+		h.Write(buf)
+	}
 }
 
 func BenchmarkKeccak512Sum(b *testing.B) {
-    b.StopTimer()
-    h := New512()
-    h.Write(buf)
-    b.StartTimer()
-    for i := 0; i < b.N; i++ {
-        b.StopTimer()
-        h0 := h
-        b.StartTimer()
-        h0.Sum(nil)
-    }
+	b.StopTimer()
+	h := New512()
+	h.Write(buf)
+	setBytes(b)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h0 := h
+		b.StartTimer()
+		h0.Sum(nil)
+	}
 }
