@@ -4,7 +4,10 @@ package keccak
 
 import (
 	"bytes"
+	"crypto/md5"
+	"golang.org/x/crypto/sha3"
 	"hash"
+	"io"
 	"math/rand"
 	"testing"
 )
@@ -233,8 +236,82 @@ var buf = func() []byte {
 	return result
 }()
 
+var sh128out = make([]byte, 16)
+
 func setBytes(b *testing.B) {
 	b.SetBytes(int64(len(buf)))
+}
+
+func BenchmarkMD5Write1MiB(b *testing.B) {
+	setBytes(b)
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h := md5.New()
+		b.StartTimer()
+		h.Write(buf)
+	}
+}
+
+func BenchmarkMD5Sum(b *testing.B) {
+	b.StopTimer()
+	h := md5.New()
+	h.Write(buf)
+	setBytes(b)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h0 := h
+		b.StartTimer()
+		h0.Sum(nil)
+	}
+}
+
+func BenchmarkKeccak128Write1MiB(b *testing.B) {
+	setBytes(b)
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h := New128()
+		b.StartTimer()
+		h.Write(buf)
+	}
+}
+
+func BenchmarkKeccak128Sum(b *testing.B) {
+	b.StopTimer()
+	h := New128()
+	h.Write(buf)
+	setBytes(b)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		h0 := h
+		b.StartTimer()
+		h0.Sum(nil)
+	}
+}
+
+func BenchmarkShake128128Write1MiB(b *testing.B) {
+	setBytes(b)
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		sh := sha3.NewShake128()
+		b.StartTimer()
+		sh.Write(buf)
+	}
+}
+
+func BenchmarkShake128128Sum(b *testing.B) {
+	b.StopTimer()
+	sh := sha3.NewShake128()
+	sh.Write(buf)
+	setBytes(b)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		sh0 := sh.Clone()
+		b.StartTimer()
+		io.ReadFull(sh0, sh128out)
+	}
 }
 
 func BenchmarkKeccak224Write1MiB(b *testing.B) {

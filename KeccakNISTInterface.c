@@ -21,6 +21,9 @@ HashReturn Init(hashState *state, int hashbitlen)
         case 0: // Default parameters, arbitrary length output
             InitSponge((spongeState*)state, 1024, 576);
             break;
+        case 128:
+            InitSponge((spongeState*)state, 1472, 128);
+            break;
         case 224:
             InitSponge((spongeState*)state, 1152, 448);
             break;
